@@ -28,7 +28,7 @@ $(function() {
   //### There are eight winning combos, the first two are supplied.
   //### What are the other six? Add 'em.
   var win_combos = [
-    [0,1,2], [3,4,5]
+    [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]
   ];
 
   var initialize = function() {
@@ -37,15 +37,27 @@ $(function() {
     //### 1.) Create nine tiles. Each is a div, each needs to be bound to 'handle_click'.
     //### Make sure giving each tile a unique 'id' for targeting. Find tile's 'class' in css.
     //### Append tiles to board.
-
+    var board = $("#board");
+    for(i=0;i<9;i++) {
+      board.append("<div class='tile' id='tile" + i + "'> </div>")
+    }
+      
     //### 2.) Make first player the current_player
+    current_player = players[0];
 
     //### 3.) Set up the players 'indicators' in UI
     //### - set player image, name, marker
     //### - set player name
     //### - the 'current_player' has a different style (see css '.current')
+    var playerImgs = $("img");
+    $(playerImgs[0]).attr("src", "img/bert.jpg");
+    console.log(playerImgs,    $(playerImgs[0]).attr("src", "img/bert.jpg")
+);
+
+    $(playerImgs[1]).attr("src", "img/ernie.jpg");
 
     //### 4.) fade in the game
+    $("#game").fadeIn();
   };
 
   var handle_click = function() {
