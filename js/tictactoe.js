@@ -38,23 +38,36 @@ $(function() {
     //### Make sure giving each tile a unique 'id' for targeting. Find tile's 'class' in css.
     //### Append tiles to board.
     var board = $("#board");
+    
     for(i=0;i<9;i++) {
       board.append("<div class='tile' id='tile" + i + "'> </div>")
     }
       
     //### 2.) Make first player the current_player
-    current_player = players[0];
-
+    current_player = $(players[0]);
+    console.log(    current_player = $(players[0])
+);
     //### 3.) Set up the players 'indicators' in UI
     //### - set player image, name, marker
     //### - set player name
     //### - the 'current_player' has a different style (see css '.current')
     var playerImgs = $("img");
-    $(playerImgs[0]).attr("src", "img/bert.jpg");
-    console.log(playerImgs,    $(playerImgs[0]).attr("src", "img/bert.jpg")
-);
+    var playerNames = $(".player");
+    var teams = $(".team");
+    
+    //Images
+    $(playerImgs[0]).attr("src", "img/ernie.jpg");
+    $(playerImgs[1]).attr("src", "img/bert.jpg");
+    
+    //Names
+    $(playerNames[0]).text("Ernie");
+    $(playerNames[1]).text("Bert");
+    var times = '&oslash;';
+    //Teams
+    $(teams[0]).text(players[0].marker);
+    $(teams[1]).text('&oslash;');
 
-    $(playerImgs[1]).attr("src", "img/ernie.jpg");
+    current_player.addClass(".current");
 
     //### 4.) fade in the game
     $("#game").fadeIn();
