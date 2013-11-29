@@ -10,29 +10,29 @@ $(function() {
   var players = [                         // player data
     {
       name:      'Ernie',
-      marker:    '&times;',
+      marker:    'X',
       img_url:   'img/ernie.jpg',
       indicator: $(status_indicators[0])
     },
     {
       name:      'Bert',
-      marker:    '&oslash;',
+      marker:    'O',
       img_url:   'img/bert.jpg',
       indicator: $(status_indicators[1])
     }
   ];
-
   var current_player;                     // player data
   var turns  = 0;                         // elapsed turns
 
   //### There are eight winning combos, the first two are supplied.
   //### What are the other six? Add 'em.
   var win_combos = [
-    [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]
+    [0,1,2], [3,4,5], [6,7,8], 
+    [0,3,6], [1,4,7], [2,5,8], 
+    [0,4,8], [2,4,6]
   ];
 
   var initialize = function() {
-    //### ready the board for game play
 
     //### 1.) Create nine tiles. Each is a div, each needs to be bound to 'handle_click'.
     //### Make sure giving each tile a unique 'id' for targeting. Find tile's 'class' in css.
@@ -40,13 +40,16 @@ $(function() {
     var board = $("#board");
     
     for(i=0;i<9;i++) {
-      board.append("<div class='tile' id='tile" + i + "'> </div>")
+      var tileId = "tile" + i;
+      var tile = $("<div class='tile' id=" + tileId + "></div>");
+      board.append(tile);
+      tiles.push(tile);
+      $("#" + tileId).click(handle_click);
     }
       
     //### 2.) Make first player the current_player
-    current_player = $(players[0]);
-    console.log(    current_player = $(players[0])
-);
+    current_player = players[0];
+
     //### 3.) Set up the players 'indicators' in UI
     //### - set player image, name, marker
     //### - set player name
@@ -54,31 +57,36 @@ $(function() {
     var playerImgs = $("img");
     var playerNames = $(".player");
     var teams = $(".team");
-    
-    //Images
-    $(playerImgs[0]).attr("src", "img/ernie.jpg");
-    $(playerImgs[1]).attr("src", "img/bert.jpg");
-    
-    //Names
-    $(playerNames[0]).text("Ernie");
-    $(playerNames[1]).text("Bert");
-    var times = '&oslash;';
-    //Teams
-    $(teams[0]).text(players[0].marker);
-    $(teams[1]).text('&oslash;');
 
-    current_player.addClass(".current");
+    for(i=0;i<players.length;i++) {
 
-    //### 4.) fade in the game
+      $(playerImgs[i]).attr("src", players[i].img_url);
+      $(playerNames[i]).text(players[i].name);
+      $(teams[i]).text(players[i].marker);
+
+      if (players[i] === current_player) {
+        players[i].indicator.addClass("current");
+      }
+
+    }  
+
     $("#game").fadeIn();
   };
 
   var handle_click = function() {
     //### this function is bound to a click event for each tile on the board
+    $(this).text(current_player.marker).unbind();
+    turns++;
+    is_win();
+    // tiles[1].text();
+
   }
 
   var is_active = function(tile) {
     //### boolean - is tile active?
+    if (tile.text() !== "") {
+      tile === "active";
+    };
   };
   
   var activate_tile = function(tile) {
@@ -88,17 +96,46 @@ $(function() {
 
   var toggle_player = function() {
     //### After each turn, toggle the current player and update player indicators
+      if(turns % 2 === 0){
+        current_player = players[0];
+        players[0].indicator.addClass("current");
+        players[1].indicator.removeClass("current");
+      }
+      else {
+        current_player = players[1];
+        players[1].indicator.addClass("current");
+        players[0].indicator.removeClass("current");
+      }
+
   };
 
 
   var is_win = function() {
     // ### whether or not the current player's positions result in a win
     // ### returns boolean
+    console.log(tiles);
+    if (tiles[0].text() !== "" && tiles[0].text() === tiles[1].text() && tiles[0].text() === tiles[2].text()) 
+      {
+        hide_indicators();
+        handle_win();
+      }
+    else if(is_tie()){
+      is_tie();
+    }
+    else {
+      toggle_player();
+      console.log(turns);
+    }
+
   };
 
   var is_tie = function() {
     //### has the game resulted in a tie?
     //### returns boolean
+    if(turns === 9){
+      handle_tie();
+      hide_indicators();
+    }
   };
 
   var handle_win = function() {
@@ -107,6 +144,10 @@ $(function() {
     //### - display winner name and image
     //### - congrats message
     //### - show new_game button
+    $("h1").text(current_player.name + " wins!");
+    $("#results").fadeIn();
+    $(".image").html("<img src='" + current_player.img_url + "'>");
+    $("button").click(new_game);
 
   };
 
@@ -115,10 +156,15 @@ $(function() {
     //### - show results panel
     //### - display tie and rubber ducky image
     //### - show new_game button
+    $("h1").text("Cat's game!");
+    $("#results").fadeIn();
+    $(".image").html("<img src='img/rubberduckie.jpg'>");
+    $("button").click(new_game);
   }
 
   var hide_indicators = function() {
-    //### optional: call this to hide the "status" container after detecting a win or a tie
+    console.log(current_player.indicator)
+    $(".current").removeClass("current");
   };
 
   var show_combo = function(combo) {
