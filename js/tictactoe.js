@@ -113,8 +113,9 @@ $(function() {
   var is_win = function() {
     // ### whether or not the current player's positions result in a win
     // ### returns boolean
-    var xS = [],
-        oS = [];
+    var xS           = [],
+        oS           = [],
+        endGameToken = false;
 
     for(i=0;i<tiles.length;i++) {      
       if(tiles[i].text() === "X") { xS.push(i)}
@@ -125,21 +126,18 @@ $(function() {
       if (_.intersection(xS, win_combo).length === 3 )
         {
           handle_win();
+          endGameToken = true;
         }
       else if (  _.intersection(oS, win_combo).length === 3 )
         {
           handle_win();
+          endGameToken = true;
         }
     }); 
     
-    if(is_tie()){
-      console.log("h");
-      is_tie();
-    }
+    if (endGameToken === false) { toggle_player(); }
 
-    else {
-      toggle_player();
-    } 
+    is_tie();
 
   };
 
