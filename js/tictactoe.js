@@ -113,19 +113,33 @@ $(function() {
   var is_win = function() {
     // ### whether or not the current player's positions result in a win
     // ### returns boolean
-    console.log(tiles);
-    if (tiles[0].text() !== "" && tiles[0].text() === tiles[1].text() && tiles[0].text() === tiles[2].text()) 
-      {
-        hide_indicators();
-        handle_win();
-      }
-    else if(is_tie()){
+    var xS = [],
+        oS = [];
+
+    for(i=0;i<tiles.length;i++) {      
+      if(tiles[i].text() === "X") { xS.push(i)}
+      else if(tiles[i].text() === "O") { oS.push(i) }
+    }
+
+    _.each(win_combos, function(win_combo) {
+      if (_.intersection(xS, win_combo).length === 3 )
+        {
+          handle_win();
+        }
+      else if (  _.intersection(oS, win_combo).length === 3 )
+        {
+          handle_win();
+        }
+    }); 
+    
+    if(is_tie()){
+      console.log("h");
       is_tie();
     }
+
     else {
       toggle_player();
-      console.log(turns);
-    }
+    } 
 
   };
 
@@ -134,7 +148,6 @@ $(function() {
     //### returns boolean
     if(turns === 9){
       handle_tie();
-      hide_indicators();
     }
   };
 
@@ -148,6 +161,7 @@ $(function() {
     $("#results").fadeIn();
     $(".image").html("<img src='" + current_player.img_url + "'>");
     $("button").click(new_game);
+    hide_indicators();
 
   };
 
@@ -160,10 +174,11 @@ $(function() {
     $("#results").fadeIn();
     $(".image").html("<img src='img/rubberduckie.jpg'>");
     $("button").click(new_game);
+    hide_indicators();
   }
 
   var hide_indicators = function() {
-    console.log(current_player.indicator)
+    console.log("argh!");
     $(".current").removeClass("current");
   };
 
