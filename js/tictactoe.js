@@ -42,6 +42,7 @@ $(function() {
     for(i=0;i<9;i++) {
       var tileId = "tile" + i;
       var tile = $("<div class='tile' id=" + tileId + "></div>");
+      
       board.append(tile);
       tiles.push(tile);
       $("#" + tileId).click(handle_click);
@@ -78,6 +79,7 @@ $(function() {
     $(this).text(current_player.marker).unbind();
     turns++;
     is_win();
+    is_tie();
     // tiles[1].text();
 
   }
@@ -137,14 +139,12 @@ $(function() {
     
     if (endGameToken === false) { toggle_player(); }
 
-    is_tie();
-
   };
 
   var is_tie = function() {
     //### has the game resulted in a tie?
     //### returns boolean
-    if(turns === 9){
+    if(turns === 9 && endGameToken === false) {
       handle_tie();
     }
   };
@@ -155,9 +155,9 @@ $(function() {
     //### - display winner name and image
     //### - congrats message
     //### - show new_game button
+    $(".image").html("<img src='" + current_player.img_url + "'>");
     $("h1").text(current_player.name + " wins!");
     $("#results").fadeIn();
-    $(".image").html("<img src='" + current_player.img_url + "'>");
     $("button").click(new_game);
     hide_indicators();
 
@@ -168,9 +168,9 @@ $(function() {
     //### - show results panel
     //### - display tie and rubber ducky image
     //### - show new_game button
+    $(".image").html("<img src='img/rubberduckie.jpg'>");
     $("h1").text("Cat's game!");
     $("#results").fadeIn();
-    $(".image").html("<img src='img/rubberduckie.jpg'>");
     $("button").click(new_game);
     hide_indicators();
   }
